@@ -31,9 +31,17 @@
     <input id="giaKhuyenNghi" type="number" />
 
     <label>Loại Shop</label>
-    <select id="loaiShop">
-      <option value="6.5">Không Mall (phí cố định 6.5%)</option>
-      <option value="7.0">Shopee Mall (phí cố định 7.0%)</option>
+    <select id="loaiShop" onchange="capNhatPhi()">
+      <option value="khong_mall">Không Mall</option>
+      <option value="mall">Shopee Mall</option>
+    </select>
+
+    <label>Ngành hàng</label>
+    <select id="nganhHang">
+      <option value="5.4">Tã bỉm - 5.4%</option>
+      <option value="6.5">Mỹ phẩm - 6.5%</option>
+      <option value="7.0">Thời trang - 7%</option>
+      <option value="5.5">Đồ chơi trẻ em - 5.5%</option>
     </select>
 
     <label>Làm tròn đến hàng trăm?</label>
@@ -47,6 +55,32 @@
   </div>
 
   <script>
+    const phiMall = {
+      "5.4": 6.5,
+      "6.5": 7.0,
+      "7.0": 8.0,
+      "5.5": 6.0
+    };
+    const phiThuong = {
+      "5.4": 5.4,
+      "6.5": 6.5,
+      "7.0": 7.0,
+      "5.5": 5.5
+    };
+
+    function capNhatPhi() {
+      const loaiShop = document.getElementById("loaiShop").value;
+      const nganhHang = document.getElementById("nganhHang");
+      const phiMap = loaiShop === "mall" ? phiMall : phiThuong;
+
+      for (let i = 0; i < nganhHang.options.length; i++) {
+        let opt = nganhHang.options[i];
+        let code = opt.value;
+        opt.text = opt.text.replace(/- .*/, `- ${phiMap[code]}%`);
+        opt.value = phiMap[code];
+      }
+    }
+
     function lamTronGia(gia) {
       return Math.round(gia / 100) * 100;
     }
@@ -56,7 +90,7 @@
       let chietKhau = parseFloat(document.getElementById("chietKhau").value) || 0;
       let loiNhuan = parseFloat(document.getElementById("loiNhuan").value) || 0;
       let giaKhuyenNghi = parseFloat(document.getElementById("giaKhuyenNghi").value);
-      let phiShopee = parseFloat(document.getElementById("loaiShop").value);
+      let phiShopee = parseFloat(document.getElementById("nganhHang").value);
       let lamTron = document.getElementById("lamTron").value === "yes";
 
       let giaVon = giaNhap * (1 - chietKhau / 100);
