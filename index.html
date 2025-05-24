@@ -49,6 +49,8 @@
       <option value="no">Không</option>
     </select>
 
+    <label><input type="checkbox" id="contentXtra" /> Tham gia Content Xtra (3%)</label>
+
     <button onclick="tinhToan()">Tính giá bán</button>
     <div class="result" id="ketQua"></div>
   </div>
@@ -65,21 +67,33 @@
       let giaKhuyenNghi = parseFloat(document.getElementById("giaKhuyenNghi").value);
       let phiShopee = parseFloat(document.getElementById("nganhHang").value);
       let lamTron = document.getElementById("lamTron").value === "yes";
+      let contentXtra = document.getElementById("contentXtra").checked;
 
       let giaVon = giaNhap * (1 - chietKhau / 100);
-      let tongPhi = phiShopee / 100 + 0.01 + 0.005 + 0.05;
+
+      // Tính phí cụ thể
+      let phiThanhToan = 0.05;
+      let phiVoucher = Math.min((giaKhuyenNghi || 0) * 0.02, 50000); // giới hạn 50k
+      let phiContent = contentXtra ? 0.03 : 0;
+
+      let tongPhi = phiShopee / 100 + phiThanhToan + phiContent;
       let giaBanDeXuat = giaVon * (1 + loiNhuan / 100) / (1 - tongPhi);
       let giaBan = lamTron ? lamTronGia(giaBanDeXuat) : giaBanDeXuat;
 
-      let ketQua = `✅ Giá vốn: ${giaVon.toLocaleString()}₫<br>`;
+      let ketQua = `✅ <b>Giá vốn:</b> ${giaVon.toLocaleString()}₫<br>`;
+      ketQua += `💸 <b>Phí Voucher Xtra:</b> ${phiVoucher.toLocaleString()}₫ (2%, tối đa 50.000₫)<br>`;
+      ketQua += `📦 <b>Phí thanh toán:</b> 5%<br>`;
+      if (contentXtra) ketQua += `🎥 <b>Phí Content Xtra:</b> 3%<br>`;
+
       if (!isNaN(giaKhuyenNghi)) {
-        let doanhThu = giaKhuyenNghi * (1 - tongPhi);
+        let doanhThu = giaKhuyenNghi * (1 - tongPhi) - phiVoucher;
         let loiNhuanThucTe = doanhThu - giaVon;
         let pt = ((loiNhuanThucTe / giaVon) * 100).toFixed(2);
-        ketQua += `⚠️ Giá khuyến nghị: ${giaKhuyenNghi.toLocaleString()}₫<br>Lợi nhuận thực tế: ${pt}%<br>`;
+        ketQua += `⚠️ <b>Giá khuyến nghị:</b> ${giaKhuyenNghi.toLocaleString()}₫<br>`;
+        ketQua += `<b>Lợi nhuận thực tế:</b> ${pt}%<br>`;
         if (pt < loiNhuan) ketQua += `<b style='color:red;'>❌ Lợi nhuận thấp hơn kỳ vọng!</b>`;
       } else {
-        ketQua += `💰 Giá bán nên đặt: <b>${giaBan.toLocaleString()}₫</b>`;
+        ketQua += `💰 <b>Giá bán nên đặt:</b> <span style="color:green">${giaBan.toLocaleString()}₫</span>`;
       }
 
       document.getElementById("ketQua").innerHTML = ketQua;
