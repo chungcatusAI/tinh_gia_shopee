@@ -5,9 +5,78 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Công cụ tính giá Shopee - VuongDung</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 2em; }
+    .container { background: #fff; max-width: 600px; margin: auto; padding: 2em; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    h1 { color: #b40000; text-align: center; }
+    label { display: block; margin-top: 1em; font-weight: bold; }
+    input, select { width: 100%; padding: 0.5em; margin-top: 0.3em; }
+    button { margin-top: 1.5em; padding: 0.7em 1.5em; background: #b40000; color: #fff; border: none; width: 100%; }
+    .result { margin-top: 2em; background: #eee; padding: 1em; border-radius: 8px; }
+  </style>
 </head>
 <body>
-  <h1>Công cụ tính giá Shopee</h1>
-  <p>Đây là bản demo offline. Vui lòng mở bằng trình duyệt.</p>
+  <div class="container">
+    <h1>Công cụ tính giá Shopee</h1>
+    <label>Giá nhập (VNĐ)</label>
+    <input id="giaNhap" type="number" />
+
+    <label>Chiết khấu mua hàng (%)</label>
+    <input id="chietKhau" type="number" />
+
+    <label>Lợi nhuận mong muốn (%)</label>
+    <input id="loiNhuan" type="number" />
+
+    <label>Giá bán khuyến nghị (nếu có)</label>
+    <input id="giaKhuyenNghi" type="number" />
+
+    <label>Loại Shop</label>
+    <select id="loaiShop">
+      <option value="6.5">Không Mall (phí cố định 6.5%)</option>
+      <option value="7.0">Shopee Mall (phí cố định 7.0%)</option>
+    </select>
+
+    <label>Làm tròn đến hàng trăm?</label>
+    <select id="lamTron">
+      <option value="yes">Có</option>
+      <option value="no">Không</option>
+    </select>
+
+    <button onclick="tinhToan()">Tính giá bán</button>
+    <div class="result" id="ketQua"></div>
+  </div>
+
+  <script>
+    function lamTronGia(gia) {
+      return Math.round(gia / 100) * 100;
+    }
+
+    function tinhToan() {
+      let giaNhap = parseFloat(document.getElementById("giaNhap").value) || 0;
+      let chietKhau = parseFloat(document.getElementById("chietKhau").value) || 0;
+      let loiNhuan = parseFloat(document.getElementById("loiNhuan").value) || 0;
+      let giaKhuyenNghi = parseFloat(document.getElementById("giaKhuyenNghi").value);
+      let phiShopee = parseFloat(document.getElementById("loaiShop").value);
+      let lamTron = document.getElementById("lamTron").value === "yes";
+
+      let giaVon = giaNhap * (1 - chietKhau / 100);
+      let tongPhi = phiShopee / 100 + 0.01 + 0.005 + 0.05;
+      let giaBanDeXuat = giaVon * (1 + loiNhuan / 100) / (1 - tongPhi);
+      let giaBan = lamTron ? lamTronGia(giaBanDeXuat) : giaBanDeXuat;
+
+      let ketQua = `✅ Giá vốn: ${giaVon.toLocaleString()}₫<br>`;
+      if (!isNaN(giaKhuyenNghi)) {
+        let doanhThu = giaKhuyenNghi * (1 - tongPhi);
+        let loiNhuanThucTe = doanhThu - giaVon;
+        let pt = ((loiNhuanThucTe / giaVon) * 100).toFixed(2);
+        ketQua += `⚠️ Giá khuyến nghị: ${giaKhuyenNghi.toLocaleString()}₫<br>Lợi nhuận thực tế: ${pt}%<br>`;
+        if (pt < loiNhuan) ketQua += `<b style='color:red;'>❌ Lợi nhuận thấp hơn kỳ vọng!</b>`;
+      } else {
+        ketQua += `💰 Giá bán nên đặt: <b>${giaBan.toLocaleString()}₫</b>`;
+      }
+
+      document.getElementById("ketQua").innerHTML = ketQua;
+    }
+  </script>
 </body>
 </html>
