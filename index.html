@@ -30,18 +30,17 @@
     <label>Giá bán khuyến nghị (nếu có)</label>
     <input id="giaKhuyenNghi" type="number" />
 
-    <label>Loại Shop</label>
-    <select id="loaiShop" onchange="capNhatPhi()">
-      <option value="khong_mall">Không Mall</option>
-      <option value="mall">Shopee Mall</option>
-    </select>
-
     <label>Ngành hàng</label>
     <select id="nganhHang">
-      <option value="5.4">Tã bỉm - 5.4%</option>
-      <option value="6.5">Mỹ phẩm - 6.5%</option>
-      <option value="7.0">Thời trang - 7%</option>
-      <option value="5.5">Đồ chơi trẻ em - 5.5%</option>
+      <option value="11.0">Chăm Sóc Thú Cưng - Thức ăn cho thú cưng - 11%</option>
+      <option value="10.5">Mẹ & Bé - Chăm sóc sức khỏe mẹ - 10.5%</option>
+      <option value="9.0">Mẹ & Bé - Chăm sóc sức khỏe bé - 9%</option>
+      <option value="9.0">Mẹ & Bé - Tã & bô em bé - 9%</option>
+      <option value="12.0">Sắc Đẹp - Chăm sóc da mặt - 12%</option>
+      <option value="12.0">Sắc Đẹp - Trang điểm - 12%</option>
+      <option value="11.5">Sức Khỏe - Chăm sóc cá nhân - 11.5%</option>
+      <option value="10.5">Sức Khỏe - Vật tư y tế - 10.5%</option>
+      <option value="11.0">Nhà cửa & Đời sống - Khác - 11%</option>
     </select>
 
     <label>Làm tròn đến hàng trăm?</label>
@@ -55,32 +54,6 @@
   </div>
 
   <script>
-    const phiMall = {
-      "5.4": 6.5,
-      "6.5": 7.0,
-      "7.0": 8.0,
-      "5.5": 6.0
-    };
-    const phiThuong = {
-      "5.4": 5.4,
-      "6.5": 6.5,
-      "7.0": 7.0,
-      "5.5": 5.5
-    };
-
-    function capNhatPhi() {
-      const loaiShop = document.getElementById("loaiShop").value;
-      const nganhHang = document.getElementById("nganhHang");
-      const phiMap = loaiShop === "mall" ? phiMall : phiThuong;
-
-      for (let i = 0; i < nganhHang.options.length; i++) {
-        let opt = nganhHang.options[i];
-        let code = opt.value;
-        opt.text = opt.text.replace(/- .*/, `- ${phiMap[code]}%`);
-        opt.value = phiMap[code];
-      }
-    }
-
     function lamTronGia(gia) {
       return Math.round(gia / 100) * 100;
     }
