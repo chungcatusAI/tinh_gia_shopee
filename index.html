@@ -65,22 +65,23 @@
       let chietKhau = parseFloat(document.getElementById("chietKhau").value) || 0;
       let loiNhuan = parseFloat(document.getElementById("loiNhuan").value) || 0;
       let giaKhuyenNghi = parseFloat(document.getElementById("giaKhuyenNghi").value);
-      let phiShopee = parseFloat(document.getElementById("nganhHang").value);
+      let phiNganh = parseFloat(document.getElementById("nganhHang").value);
       let lamTron = document.getElementById("lamTron").value === "yes";
       let contentXtra = document.getElementById("contentXtra").checked;
 
       let giaVon = giaNhap * (1 - chietKhau / 100);
 
-      // Tính phí cụ thể
+      // Các loại phí
       let phiThanhToan = 0.05;
-      let phiVoucher = Math.min((giaKhuyenNghi || 0) * 0.02, 50000); // giới hạn 50k
+      let phiVoucher = Math.min((giaKhuyenNghi || 0) * 0.02, 50000); // 2%, tối đa 50k
       let phiContent = contentXtra ? 0.03 : 0;
+      let tongPhi = phiNganh / 100 + phiThanhToan + phiContent;
 
-      let tongPhi = phiShopee / 100 + phiThanhToan + phiContent;
       let giaBanDeXuat = giaVon * (1 + loiNhuan / 100) / (1 - tongPhi);
       let giaBan = lamTron ? lamTronGia(giaBanDeXuat) : giaBanDeXuat;
 
       let ketQua = `✅ <b>Giá vốn:</b> ${giaVon.toLocaleString()}₫<br>`;
+      ketQua += `📂 <b>Phí ngành hàng:</b> ${phiNganh}%<br>`;
       ketQua += `💸 <b>Phí Voucher Xtra:</b> ${phiVoucher.toLocaleString()}₫ (2%, tối đa 50.000₫)<br>`;
       ketQua += `📦 <b>Phí thanh toán:</b> 5%<br>`;
       if (contentXtra) ketQua += `🎥 <b>Phí Content Xtra:</b> 3%<br>`;
